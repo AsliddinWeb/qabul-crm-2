@@ -1,4 +1,6 @@
 from rest_framework import generics, permissions, status
+from rest_framework.permissions import IsAuthenticated
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -13,8 +15,11 @@ from .serializers import (
     PasswordResetSendCodeSerializer,
     PasswordResetConfirmSerializer, 
     CombinedAuthSerializer,
-    ApplicantProfileCreateSerializer
+    ApplicantProfileCreateSerializer,
+    ApplicantCreateByStaffSerializer
 )
+
+from .permissions import IsStaffOrAdmin
 
 
 class CombinedAuthView(generics.CreateAPIView):
@@ -92,3 +97,8 @@ class ApplicantProfileCreateView(generics.CreateAPIView):
     @swagger_auto_schema(tags=["auth"])
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
+
+class CreateApplicantByStaffView(generics.CreateAPIView):
+    serializer_class = ApplicantCreateByStaffSerializer
+    permission_classes = [IsAuthenticated, IsStaffOrAdmin]

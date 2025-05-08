@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from apps.regions.models import Country, Region, District
+
 from apps.users.models import PhoneVerification, ApplicantProfile
 from .utils.eskiz import send_sms
 
@@ -164,3 +166,59 @@ class ApplicantProfileCreateSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         profile = ApplicantProfile.objects.create(user=user, **validated_data)
         return profile
+
+
+class ApplicantCreateByStaffSerializer(serializers.ModelSerializer):
+    # userga tegishli field
+    phone = serializers.CharField()
+    full_name = serializers.CharField()
+    birth_date = serializers.DateField()
+    passport_series = serializers.CharField()
+    pinfl = serializers.CharField()
+    country = serializers.PrimaryKeyRelatedField(queryset=Country.objects.all(), required=False)
+    region = serializers.PrimaryKeyRelatedField(queryset=Region.objects.all(), required=False)
+    district = serializers.PrimaryKeyRelatedField(queryset=District.objects.all(), required=False)
+    address = serializers.CharField(required=False)
+    gender = serializers.CharField(required=False)
+    nationality = serializers.CharField(required=False)
+    image = serializers.ImageField(required=False)
+    passport_file = serializers.FileField(required=False)
+
+    class Meta:
+        model = ApplicantProfile
+        fields = [
+            'phone', 'full_name', 'birth_date', 'passport_series', 'pinfl',
+            'country', 'region', 'district', 'address',
+            'gender', 'nationality', 'image', 'passport_file'
+        ]
+
+    def validate_phone(self, value):
+        if User.objects.filter(phone=value).exists():
+            raise serializers.ValidationError("Bu telefon raqam bilan foydalanuvchi allaqachon mavjud.")
+        return value
+
+    def create(self, validated_data):
+        # user uchun fieldlar
+        phone = validated_data.pop('phone')
+        full_name = validated_data.pop('full_name')
+
+        # user yaratish
+        user = User.objects.create(
+            phone=phone,
+            full_name=full_name,
+            role='APPLICANT',
+            is_verified=True,
+        )
+
+        # profile yaratish
+        profile = ApplicantProfile.objects.create(user=user, **validated_data)
+        return profile
+
+    def to_representation(self, instance):
+        return {
+            "user_id": instance.user.id,
+            "phone": instance.user.phone,
+            "full_name": instance.full_name,
+            "profile_id": instance.id,
+            "detail": "Abituriyent va profil yaratildi."
+        }
