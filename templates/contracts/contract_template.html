@@ -1,0 +1,23 @@
+<!-- contracts/contract_template.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Shartnoma</title>
+    <style>
+        body { font-family: DejaVu Sans, sans-serif; font-size: 14px; line-height: 1.6; }
+        h1 { text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Shartnoma</h1>
+    <p><strong>F.I.Sh:</strong> {{ application.user.full_name }}</p>
+    <p><strong>Telefon:</strong> {{ application.user.phone }}</p>
+    <p><strong>Yo'nalish:</strong> {{ application.program.name }}</p>
+    <p><strong>Filial:</strong> {{ application.branch.name }}</p>
+    <p><strong>Ta'lim darajasi:</strong> {{ application.education_level.name }}</p>
+    <p><strong>Ta'lim shakli:</strong> {{ application.education_form.name }}</p>
+    <p><strong>Kontrakt narxi:</strong> {{ application.program.tuition_fee }} so'm</p>
+    <p><strong>Topshirgan sana:</strong> {{ application.created_at|date:"Y-m-d" }}</p>
+</body>
+</html>

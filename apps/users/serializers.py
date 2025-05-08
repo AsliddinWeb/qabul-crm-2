@@ -33,7 +33,7 @@ class CombinedAuthSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         phone = validated_data['phone']
-        user, created = User.objects.get_or_create(phone=phone, defaults={'is_verified': False})
+        user, created = User.objects.get_or_create(phone=f"+{phone}", defaults={'is_verified': False})
 
         if not can_send_code(phone):
             raise serializers.ValidationError("Tasdiqlash kodi allaqachon yuborilgan. 1 daqiqa kuting.")

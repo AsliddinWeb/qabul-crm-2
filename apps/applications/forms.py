@@ -1,7 +1,6 @@
 from django import forms
 from .models import Application
 
-
 class ApplicationAdminForm(forms.ModelForm):
     class Meta:
         model = Application
@@ -19,23 +18,26 @@ class ApplicationAdminForm(forms.ModelForm):
         education_level = cleaned_data.get('education_level')
         education_form = cleaned_data.get('education_form')
 
-        # 1. Transfer qoidalari
-        if admission_type == 'transfer':
-            if not transfer_diplom:
-                raise forms.ValidationError("Transfer qabuli uchun transfer diplom kerak.")
-            if diplom:
-                raise forms.ValidationError("Transferda oddiy diplom bo‘lmasligi kerak.")
-            if transfer_diplom.user != user:
-                raise forms.ValidationError("Transfer diplom foydalanuvchisi ariza egasi bilan mos emas.")
-        else:
-            if not diplom:
-                raise forms.ValidationError("Yangi qabul uchun diplom kerak.")
-            if transfer_diplom:
-                raise forms.ValidationError("Yangi qabulda transfer diplom kerak emas.")
-            if diplom.user != user:
-                raise forms.ValidationError("Diplom foydalanuvchisi ariza egasi bilan mos emas.")
+        # ✅ Telegram ID bo‘lsa diplom tekshiruvi o‘tkazilmaydi
+        skip_diploma_check = bool(user and user.telegram_id)
 
-        # 2. Program mosligini tekshirish
+        if not skip_diploma_check:
+            if admission_type == 'transfer':
+                if not transfer_diplom:
+                    raise forms.ValidationError("Transfer qabuli uchun transfer diplom kerak.")
+                if diplom:
+                    raise forms.ValidationError("Transferda oddiy diplom bo‘lmasligi kerak.")
+                if transfer_diplom.user != user:
+                    raise forms.ValidationError("Transfer diplom foydalanuvchisi ariza egasi bilan mos emas.")
+            else:
+                if not diplom:
+                    raise forms.ValidationError("Yangi qabul uchun diplom kerak.")
+                if transfer_diplom:
+                    raise forms.ValidationError("Yangi qabulda transfer diplom kerak emas.")
+                if diplom.user != user:
+                    raise forms.ValidationError("Diplom foydalanuvchisi ariza egasi bilan mos emas.")
+
+        # ✅ Bu qism har doim ishlaydi — hatto telegram_id bo‘lsa ham
         if program:
             if program.branch != branch:
                 raise forms.ValidationError({
@@ -55,7 +57,7 @@ class ApplicationAdminForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
 
-        # 3. Transfer bo‘lsa course ni avtomatik to‘ldirish
+        # Course: faqat transfer diplom bo‘lsa
         if instance.transfer_diplom:
             instance.course = instance.transfer_diplom.target_course
 
