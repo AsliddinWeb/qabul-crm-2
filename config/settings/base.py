@@ -37,6 +37,9 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
+    # Admi UI
+    'unfold',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -199,4 +202,11 @@ SWAGGER_SETTINGS = {
         }
     },
     "USE_SESSION_AUTH": False,  # Swagger'da Session auth tugmasi ko‘rinmaydi
+}
+
+# Unfold settings
+UNFOLD = {
+    "SITE_HEADER": "Qabul Dashboard",
+    "SITE_TITLE": "QabulCRM",
+    "DASHBOARD": "config.dashboard.ApplicationDashboard",  # custom dashboard
 }

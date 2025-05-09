@@ -27,7 +27,8 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 # Custom admin
-from .admin import admin_site
+# from .dashboard import ApplicationDashboard
+# from unfold.admin import site as unfold_admin_site
 
 schema_view = get_schema_view(
    openapi.Info(
