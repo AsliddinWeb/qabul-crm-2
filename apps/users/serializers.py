@@ -40,7 +40,7 @@ class CombinedAuthSerializer(serializers.Serializer):
 
         code = generate_code()
         PhoneVerification.objects.create(phone=phone, code=code)
-        send_sms(phone, f"Xalqaro innovatsion universiteti kodingiz: {code}")
+        send_sms(phone, f"Xalqaro innovatsion universiteti qabul tizimiga kirish kodingiz: {code}")
 
         self.user = user
         self.created = created
