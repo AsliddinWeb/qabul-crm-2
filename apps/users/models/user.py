@@ -33,6 +33,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return f"{self.full_name or self.phone} ({self.role})"
     
+    
     # 👇 Profile method
     @property
     def profile(self):

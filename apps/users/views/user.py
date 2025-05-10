@@ -10,7 +10,7 @@ from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 # Swagger Docs
 from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import (
+from apps.users.serializers import (
     VerifyCodeSerializer,
     PasswordResetSendCodeSerializer,
     PasswordResetConfirmSerializer, 
@@ -19,7 +19,7 @@ from .serializers import (
     ApplicantCreateByStaffSerializer
 )
 
-from .permissions import IsStaffOrAdmin
+from apps.users.permissions import IsStaffOrAdmin
 
 
 class CombinedAuthView(generics.CreateAPIView):

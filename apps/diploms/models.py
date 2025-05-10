@@ -25,7 +25,7 @@ class Course(models.Model):
 
 
 class Diplom(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='diploma')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='diplom')
     serial_number = models.CharField(max_length=100)
     education_type = models.ForeignKey(EducationType, on_delete=models.CASCADE)
     institution_type = models.ForeignKey(InstitutionType, on_delete=models.CASCADE)
@@ -36,14 +36,14 @@ class Diplom(models.Model):
     region = models.ForeignKey(Region, on_delete=models.CASCADE)
     district = models.ForeignKey(District, on_delete=models.CASCADE)
 
-    diploma_file = models.FileField(upload_to='diplomas/')
+    diploma_file = models.FileField(upload_to='diploms/')
 
     def __str__(self):
         return self.serial_number
 
 
 class TransferDiplom(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='transfer_diploma')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='transfer_diplom')
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     university_name = models.TextField()
     target_course = models.ForeignKey(Course, on_delete=models.CASCADE)

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
+from unfold.admin import ModelAdmin, StackedInline, TabularInline
 
 from apps.users.models import (
     User, PhoneVerification,
@@ -8,20 +9,21 @@ from apps.users.models import (
     ApplicantProfile, StaffProfile, AdminProfile
 )
 
+
 # --- Inline Profile Admins ---
-class ApplicantProfileInline(admin.StackedInline):
+class ApplicantProfileInline(StackedInline):
     model = ApplicantProfile
     extra = 0
     can_delete = False
 
 
-class StaffProfileInline(admin.StackedInline):
+class StaffProfileInline(StackedInline):
     model = StaffProfile
     extra = 0
     can_delete = False
 
 
-class AdminProfileInline(admin.StackedInline):
+class AdminProfileInline(StackedInline):
     model = AdminProfile
     extra = 0
     can_delete = False
@@ -29,9 +31,9 @@ class AdminProfileInline(admin.StackedInline):
 
 # --- Custom User Admin ---
 @admin.register(User)
-class UserAdmin(BaseUserAdmin):
+class UserAdmin(ModelAdmin, BaseUserAdmin):
     model = User
-    list_display = ('id', 'phone', 'full_name', 'telegram_id', 'role', 'is_verified', 'is_active', 'is_staff')
+    list_display = ('phone', 'id', 'full_name', 'telegram_id', 'role', 'is_verified', 'is_active', 'is_staff')
     list_filter = ('role', 'is_active', 'is_staff', 'is_verified')
     search_fields = ('phone', 'full_name', 'telegram_id')
     ordering = ('-id',)
@@ -93,8 +95,8 @@ class AdminProxyAdmin(UserAdmin):
 
 # --- Phone Verification Admin ---
 @admin.register(PhoneVerification)
-class PhoneVerificationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'phone', 'code', 'created_at')
+class PhoneVerificationAdmin(ModelAdmin, admin.ModelAdmin):
+    list_display = ('phone', 'id', 'code', 'created_at')
     search_fields = ('phone',)
     ordering = ('-id',)
     readonly_fields = ('created_at',)

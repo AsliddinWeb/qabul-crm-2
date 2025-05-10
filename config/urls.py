@@ -45,6 +45,15 @@ urlpatterns = [
 
     # Users API
     path('api/v1/auth/', include('apps.users.urls')),
+
+    # Diploms API
+    path('api/v1/diploms/', include('apps.diploms.urls')),
+
+    # Applications API
+    path('api/v1/applications/', include('apps.applications.urls')),
+
+    # Programs API
+    path('api/v1/programs/', include('apps.programs.urls')),
     
     # Swagger UI
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

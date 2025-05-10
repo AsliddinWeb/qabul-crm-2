@@ -22,7 +22,10 @@ class ApplicantProfile(models.Model):
         related_name='applicant_profile',
         limit_choices_to={'role': 'APPLICANT'}
     )
-    full_name = models.CharField(max_length=255)
+    # full_name = models.CharField(max_length=255, null=True, blank=True)
+    last_name = models.CharField(max_length=255, blank=True, null=True)
+    first_name = models.CharField(max_length=255, blank=True, null=True)
+    other_name = models.CharField(max_length=255, blank=True, null=True)
     birth_date = models.DateField()
     passport_series = models.CharField(max_length=50)
     pinfl = models.CharField(max_length=255)
@@ -39,4 +42,5 @@ class ApplicantProfile(models.Model):
     passport_file = models.FileField(upload_to='users/passports/files/', null=True, blank=True)
 
     def __str__(self):
-        return self.full_name
+        return f"{self.last_name or ''} {self.first_name or ''} {self.other_name or ''}".strip()
+

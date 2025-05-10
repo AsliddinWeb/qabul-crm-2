@@ -12,10 +12,21 @@ def get_eskiz_client():
     return client
 
 
+def normalize_phone(phone):
+    """
+    Telefon raqamni 998 bilan boshlanuvchi formatga keltiradi.
+    Masalan: +998901234567 -> 998901234567
+    """
+    if phone.startswith('+'):
+        phone = phone[1:]
+    return phone
+
+
 def send_sms(phone, message):
     """
     Telefon raqamga SMS yuboradi. phone: `998901234567` formatida bo'lishi kerak.
     """
+    phone = normalize_phone(phone)
     try:
         client = get_eskiz_client()
         response = client.send_sms(phone_number=phone, message=message)
