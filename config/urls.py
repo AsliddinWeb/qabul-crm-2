@@ -54,6 +54,9 @@ urlpatterns = [
 
     # Programs API
     path('api/v1/programs/', include('apps.programs.urls')),
+
+    # Regions API
+    path('api/v1/regions/', include('apps.regions.urls')),
     
     # Swagger UI
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

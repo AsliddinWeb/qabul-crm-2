@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     VerifyCodeView, 
     LogoutView, PasswordResetSendCodeView, PasswordResetConfirmView, 
-    ApplicantProfileCreateView, CombinedAuthView, CreateApplicantByStaffView, GetPassportInfoFromGov
+    ApplicantProfileCreateView, CombinedAuthView, CreateApplicantByStaffView, GetPassportInfoFromGov, GetMeView
 )
 from rest_framework_simplejwt.views import TokenRefreshView
 
@@ -24,4 +24,7 @@ urlpatterns = [
 
     # Get Passport Info
     path('get-passport-info/', GetPassportInfoFromGov.as_view(), name='passport-info-from-gov'),
+
+    # Get ME
+    path('me/', GetMeView.as_view(), name='get-me'),
 ]

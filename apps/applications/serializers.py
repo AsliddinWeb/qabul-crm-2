@@ -1,46 +1,47 @@
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
-from apps.applications.models import Application
-
-User = get_user_model()
+from .models import Application
 
 
-# --- Applicant (oddiy foydalanuvchi) uchun ariza yaratish ---
-class ApplicationCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Application
-        exclude = ('reviewed_by', 'contract_file', 'course', 'status')
-
-    def validate(self, attrs):
-        user = self.context['request'].user
-        if Application.objects.filter(user=user).exists():
-            raise serializers.ValidationError("❌ Siz allaqachon ariza topshirgansiz.")
-        return attrs
-
-    def create(self, validated_data):
-        user = self.context['request'].user
-        return Application.objects.create(user=user, **validated_data)
-
-
-# --- Staff/Admin tomonidan ariza yaratish ---
-class ApplicationStaffCreateSerializer(serializers.ModelSerializer):
-    phone = serializers.CharField(write_only=True)
+class ApplicationSerializer(serializers.ModelSerializer):
+    user_full_name = serializers.CharField(source='user.full_name', read_only=True)
+    program_name = serializers.CharField(source='program.name', read_only=True)
+    contract_file_url = serializers.FileField(source='contract_file', read_only=True)
 
     class Meta:
         model = Application
-        exclude = ('user', 'reviewed_by', 'contract_file', 'course', 'status')
+        fields = [
+            'id',
+            'user',
+            'user_full_name',
+            'reviewed_by',
+            'admission_type',
+            'branch',
+            'education_level',
+            'education_form',
+            'program',
+            'program_name',
+            'diplom',
+            'transfer_diplom',
+            'course',
+            'contract_file',
+            'contract_file_url',
+            'status',
+            'created_at',
+            'updated_at'
+        ]
+        read_only_fields = ['status', 'created_at', 'updated_at', 'user', 'reviewed_by', 'course']
 
-    def validate_phone(self, value):
-        try:
-            user = User.objects.get(phone=value)
-        except User.DoesNotExist:
-            raise serializers.ValidationError("❌ Bunday foydalanuvchi mavjud emas.")
-        if Application.objects.filter(user=user).exists():
-            raise serializers.ValidationError("❌ Bu foydalanuvchi allaqachon ariza topshirgan.")
-        self.context['target_user'] = user  # saqlab qo'yamiz
-        return value
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = self.context.get('request')
 
-    def create(self, validated_data):
-        user = self.context['target_user']
-        validated_data.pop('phone')  # phone ni olib tashlaymiz
-        return Application.objects.create(user=user, **validated_data)
+        if request and hasattr(request, 'user') and request.user.is_authenticated:
+            # Telegram foydalanuvchisining diplom fayllarini topshirishini talab qilmaslik
+            if hasattr(request.user, 'telegram_id') and request.user.telegram_id:
+                self.fields['diplom'].required = False
+                self.fields['transfer_diplom'].required = False
+            else:
+                self.fields['diplom'].required = True
+                if self.initial_data.get('admission_type') == 'transfer':
+                    self.fields['transfer_diplom'].required = True
+

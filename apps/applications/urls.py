@@ -1,7 +1,10 @@
-from django.urls import path
-from apps.applications.views import ApplicationMeView, ApplicationByPhoneView
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import ApplicationViewSet
+
+router = DefaultRouter()
+router.register(r'', ApplicationViewSet, basename='applications')
 
 urlpatterns = [
-    path('me/', ApplicationMeView.as_view(), name='application-me'),
-    path('by-staff/', ApplicationByPhoneView.as_view(), name='application-by-phone'),
+    path('', include(router.urls)),
 ]

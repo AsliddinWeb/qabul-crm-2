@@ -26,16 +26,27 @@ def normalize_phone(phone):
     return phone
 
 
-# --- Combined login/register ---
+# --- Combined login/register with optional telegram_id ---
 class CombinedAuthSerializer(serializers.Serializer):
     phone = serializers.CharField()
+    telegram_id = serializers.CharField(required=False, allow_blank=True, write_only=True)
 
     def validate_phone(self, value):
         return normalize_phone(value)
 
     def create(self, validated_data):
         phone = validated_data['phone']
-        user, created = User.objects.get_or_create(phone=phone, defaults={'is_verified': False})
+        telegram_id = validated_data.get('telegram_id')
+
+        user, created = User.objects.get_or_create(
+            phone=phone,
+            defaults={'is_verified': False}
+        )
+
+        # 🟡 Agar telegram_id mavjud bo‘lsa, yangilaymiz
+        if telegram_id and (not user.telegram_id or user.telegram_id != telegram_id):
+            user.telegram_id = telegram_id
+            user.save(update_fields=['telegram_id'])
 
         if not can_send_code(phone):
             raise serializers.ValidationError("Tasdiqlash kodi allaqachon yuborilgan. 1 daqiqa kuting.")
@@ -55,6 +66,7 @@ class CombinedAuthSerializer(serializers.Serializer):
             "is_verified": instance.is_verified,
             "detail": "Tasdiqlash kodi yuborildi."
         }
+
 
 
 # --- Verify kodni tasdiqlash ---

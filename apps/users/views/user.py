@@ -6,6 +6,11 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken
 
+from apps.diploms.serializers import DiplomCreateSerializer, TransferDiplomCreateSerializer
+from apps.applications.models import Application
+from apps.applications.serializers import ApplicationSerializer as ApplicationCreateSerializer
+
+
 
 # Swagger Docs
 from drf_yasg.utils import swagger_auto_schema
@@ -102,3 +107,44 @@ class ApplicantProfileCreateView(generics.CreateAPIView):
 class CreateApplicantByStaffView(generics.CreateAPIView):
     serializer_class = ApplicantCreateByStaffSerializer
     permission_classes = [IsAuthenticated, IsStaffOrAdmin]
+
+
+class GetMeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        # --- Bog‘langan ma’lumotlar
+        applicant_profile = None
+        diplom = None
+        transfer_diplom = None
+        application = None
+
+        if hasattr(user, 'applicant_profile'):
+            applicant_profile = ApplicantProfileCreateSerializer(user.applicant_profile).data
+
+        if hasattr(user, 'diploma'):
+            diplom = DiplomCreateSerializer(user.diploma).data
+
+        if hasattr(user, 'transfer_diploma'):
+            transfer_diplom = TransferDiplomCreateSerializer(user.transfer_diploma).data
+
+        try:
+            application = Application.objects.get(user=user)
+            application = ApplicationCreateSerializer(application).data
+        except Application.DoesNotExist:
+            application = None
+
+        return Response({
+            "id": user.id,
+            "phone": user.phone,
+            "telegram_id": user.telegram_id,
+            "role": user.role,
+            "is_verified": user.is_verified,
+            "full_name": user.full_name,
+            "profile": applicant_profile,
+            "diplom": diplom,
+            "transfer_diplom": transfer_diplom,
+            "application": application
+        })
