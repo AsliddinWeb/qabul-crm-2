@@ -1,10 +1,10 @@
 # views.py
 from rest_framework import generics, permissions
-from apps.diploms.models import Diplom, TransferDiplom
+from apps.diploms.models import EducationType, InstitutionType, Course
 from apps.diploms.serializers import (
     DiplomCreateSerializer, TransferDiplomCreateSerializer,
     DiplomStaffCreateSerializer, TransferDiplomStaffCreateSerializer,
-    DiplomExistSerializer, TransferDiplomExistSerializer
+    DiplomExistSerializer, TransferDiplomExistSerializer, EducationTypeSerializer, InstitutionTypeSerializer, CourseSerializer
 )
 
 
@@ -45,3 +45,17 @@ class TransferDiplomDetailView(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user.transfer_diplom
+
+
+
+class EducationTypeListView(generics.ListAPIView):
+    queryset = EducationType.objects.all()
+    serializer_class = EducationTypeSerializer
+
+class InstitutionTypeListView(generics.ListAPIView):
+    queryset = InstitutionType.objects.all()
+    serializer_class = InstitutionTypeSerializer
+
+class CourseListView(generics.ListAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer

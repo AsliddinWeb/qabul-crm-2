@@ -3,7 +3,7 @@ from django.urls import path
 from .views import (
     DiplomCreateView, TransferDiplomCreateView,
     DiplomStaffCreateView, TransferDiplomStaffCreateView,
-    DiplomDetailView, TransferDiplomDetailView
+    DiplomDetailView, TransferDiplomDetailView, EducationTypeListView, InstitutionTypeListView, CourseListView
 )
 
 urlpatterns = [
@@ -18,4 +18,9 @@ urlpatterns = [
     # Check existence
     path('diplom/', DiplomDetailView.as_view(), name='diplom-detail'),
     path('transfer-diplom/', TransferDiplomDetailView.as_view(), name='transfer-diplom-detail'),
+
+    # Diplom APIs
+    path('education-types/', EducationTypeListView.as_view(), name='education-type-list'),
+    path('institution-types/', InstitutionTypeListView.as_view(), name='institution-type-list'),
+    path('courses/', CourseListView.as_view(), name='course-list'),
 ]

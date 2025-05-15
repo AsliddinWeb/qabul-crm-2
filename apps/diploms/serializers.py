@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from apps.regions.models import Country, Region, District
 from apps.diploms.models import Diplom, TransferDiplom, EducationType, InstitutionType, Course
 from django.contrib.auth import get_user_model
 
@@ -105,3 +104,19 @@ class TransferDiplomExistSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransferDiplom
         fields = '__all__'
+
+
+class EducationTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EducationType
+        fields = ['id', 'name']
+
+class InstitutionTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InstitutionType
+        fields = ['id', 'name']
+
+class CourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = ['id', 'name']
