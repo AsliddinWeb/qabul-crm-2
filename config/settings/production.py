@@ -5,6 +5,8 @@ from .base import *
 # Debug
 DEBUG = False
 
+CSRF_TRUSTED_ORIGINS = ["https://qabul-api.xiuedu.uz", "https://www.qabul-api.xiuedu.uz"]
+
 # Database
 DATABASES = {
     'default': {
