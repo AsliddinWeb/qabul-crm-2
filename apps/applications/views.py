@@ -8,7 +8,6 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        # Swagger view bo‘lsa, bo‘sh queryset qaytariladi
         if getattr(self, 'swagger_fake_view', False):
             return Application.objects.none()
 
@@ -19,4 +18,9 @@ class ApplicationViewSet(viewsets.ModelViewSet):
             elif user.role in ['STAFF', 'ADMIN']:
                 return Application.objects.all()
         return Application.objects.none()
+
+    def perform_create(self, serializer):
+        # Yaratilayotgan arizaga foydalanuvchini qo‘shish
+        serializer.save(user=self.request.user)
+
 

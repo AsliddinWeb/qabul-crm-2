@@ -3,6 +3,7 @@ from django.conf import settings
 
 from apps.users.models import User
 
+
 class Staff(User):
     class Meta:
         proxy = True
@@ -19,10 +20,15 @@ class StaffProfile(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='staff_profile',
-        limit_choices_to={'role': 'STAFF'}
+        limit_choices_to={'role': 'STAFF'},
+        verbose_name='Foydalanuvchi'
     )
-    position = models.CharField(max_length=100, null=True, blank=True)
-    image = models.ImageField(upload_to='users/staffs/photos/', blank=True, null=True)
+    position = models.CharField("Lavozimi", max_length=100, null=True, blank=True)
+    image = models.ImageField("Rasm", upload_to='users/staffs/photos/', blank=True, null=True)
 
     def __str__(self):
-        return str(self.user.id)
+        return str(self.user)
+
+    class Meta:
+        verbose_name = 'Xodim profili'
+        verbose_name_plural = 'Xodim profillari'

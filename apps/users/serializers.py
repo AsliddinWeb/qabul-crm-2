@@ -48,8 +48,8 @@ class CombinedAuthSerializer(serializers.Serializer):
             user.telegram_id = telegram_id
             user.save(update_fields=['telegram_id'])
 
-        if not can_send_code(phone):
-            raise serializers.ValidationError("Tasdiqlash kodi allaqachon yuborilgan. 1 daqiqa kuting.")
+        # if not can_send_code(phone):
+        #     raise serializers.ValidationError("Tasdiqlash kodi allaqachon yuborilgan. 1 daqiqa kuting.")
 
         code = generate_code()
         PhoneVerification.objects.create(phone=phone, code=code)
@@ -175,13 +175,17 @@ class ApplicantProfileCreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
-        user = self.context['request'].user
-        if hasattr(user, 'applicant_profile'):
-            raise serializers.ValidationError("Profil allaqachon yaratilgan.")
+        # Validatsiyadan o‘tkazamiz, lekin xatolik qaytarmaymiz
         return attrs
 
     def create(self, validated_data):
         user = self.context['request'].user
+
+        # Agar profil allaqachon mavjud bo‘lsa, uni qaytaramiz
+        if hasattr(user, 'applicant_profile'):
+            return user.applicant_profile
+
+        # Yangi profil yaratamiz
         profile = ApplicantProfile.objects.create(user=user, **validated_data)
         return profile
 

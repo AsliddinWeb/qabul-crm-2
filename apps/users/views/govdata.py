@@ -59,6 +59,11 @@ class GetPassportInfoFromGov(APIView):
                 
                 # Parse data
                 returned_data["full_name"] = data.get("fullname")
+
+                returned_data["first_name"] = data.get("firstname")
+                returned_data["last_name"] = data.get("familyname")
+                returned_data["second_name"] = data.get("lastname")
+
                 returned_data["birth_date"] = data.get("dateofbirth")
                 returned_data["passport_series"] = f"{data.get("CheckResult").get("documentseries")}{data.get("CheckResult").get("documentnumber")}"
                 returned_data["passport_number"] = data.get("pinfl")

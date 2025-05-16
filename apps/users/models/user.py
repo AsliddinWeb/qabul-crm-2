@@ -9,32 +9,32 @@ from apps.users.managers import UserManager
 class User(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = (
         ("ADMIN", "Admin"),
-        ("APPLICANT", "Applicant"),
-        ("STAFF", "Staff"),
+        ("APPLICANT", "Ariza topshiruvchi"),
+        ("STAFF", "Xodim"),
     )
 
-    phone = models.CharField(max_length=20, unique=True)
-    
-    full_name = models.CharField(max_length=255, blank=True, null=True)
-    telegram_id = models.CharField(max_length=255, null=True, blank=True)
+    phone = models.CharField("Telefon raqam", max_length=20, unique=True)
+    full_name = models.CharField("To‘liq ismi", max_length=255, blank=True, null=True)
+    telegram_id = models.CharField("Telegram ID", max_length=255, null=True, blank=True)
 
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='APPLICANT')
+    role = models.CharField("Rol", max_length=20, choices=ROLE_CHOICES, default='APPLICANT')
 
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-
-    is_verified = models.BooleanField(default=False)
+    is_active = models.BooleanField("Faolmi?", default=True)
+    is_staff = models.BooleanField("Staff huquqi bormi?", default=False)
+    is_verified = models.BooleanField("Tasdiqlanganmi?", default=False)
 
     USERNAME_FIELD = 'phone'
     REQUIRED_FIELDS = []
 
     objects = UserManager()
 
+    class Meta:
+        verbose_name = "Foydalanuvchi"
+        verbose_name_plural = "Foydalanuvchilar"
+
     def __str__(self):
         return f"{self.full_name or self.phone} ({self.role})"
-    
-    
-    # 👇 Profile method
+
     @property
     def profile(self):
         if self.role == 'APPLICANT':
@@ -45,10 +45,11 @@ class User(AbstractBaseUser, PermissionsMixin):
             return getattr(self, 'admin_profile', None)
         return None
 
+
 class PhoneVerification(models.Model):
-    phone = models.CharField(max_length=20)
-    code = models.CharField(max_length=6)
-    created_at = models.DateTimeField(auto_now_add=True)
+    phone = models.CharField("Telefon raqam", max_length=20)
+    code = models.CharField("Tasdiqlash kodi", max_length=6)
+    created_at = models.DateTimeField("Yaratilgan vaqti", auto_now_add=True)
 
     def is_expired(self):
         return timezone.now() > self.created_at + timedelta(minutes=1)
@@ -60,25 +61,9 @@ class PhoneVerification(models.Model):
             return False
         return True
 
+    class Meta:
+        verbose_name = "Telefonni tasdiqlash"
+        verbose_name_plural = "Tasdiqlash kodlari"
 
     def __str__(self):
         return f"{self.phone} - {self.code}"
-
-# class User(AbstractUser):
-#     class Role(models.TextChoices):
-#         ADMIN = "ADMIN", "Admin"
-#         APPLICANT = "APPLICANT", "Applicant"
-#         STAFF = "STAFF", "Staff"
-    
-#     phone = models.CharField(max_length=50, unique=True)
-    
-#     base_role = Role.APPLICANT
-
-#     role = models.CharField(max_length=50, choices=Role.choices)
-
-#     USERNAME_FIELD = 'phone'
-
-#     def save(self, *arg, **kwargs):
-#         if not self.pk:
-#             self.role = self.base_role
-#             return super().save(*arg, **kwargs)

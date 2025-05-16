@@ -211,5 +211,9 @@ SWAGGER_SETTINGS = {
 UNFOLD = {
     "SITE_HEADER": "Qabul Dashboard",
     "SITE_TITLE": "QabulCRM",
-    "DASHBOARD": "config.dashboard.ApplicationDashboard",  # custom dashboard
+    'SIDEBAR_ORDER': [
+        'users',
+        'diploms',
+        'applicants',
+    ]
 }
