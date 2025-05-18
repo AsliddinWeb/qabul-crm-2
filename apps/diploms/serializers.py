@@ -10,7 +10,7 @@ class DiplomCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Diplom
         fields = [
-            'serial_number', 'education_type', 'institution_type',
+            'id', 'serial_number', 'education_type', 'institution_type',
             'university_name', 'graduation_year',
             'region', 'district', 'diploma_file'
         ]
@@ -30,7 +30,7 @@ class DiplomCreateSerializer(serializers.ModelSerializer):
 class TransferDiplomCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransferDiplom
-        fields = ['country', 'university_name', 'target_course', 'transcript_file']
+        fields = ['id', 'country', 'university_name', 'target_course', 'transcript_file']
 
     def validate(self, attrs):
         user = self.context['request'].user

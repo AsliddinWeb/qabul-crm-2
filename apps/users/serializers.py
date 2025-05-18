@@ -168,7 +168,7 @@ class ApplicantProfileCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ApplicantProfile
         fields = [
-            'last_name', 'first_name', 'other_name',
+            'id', 'last_name', 'first_name', 'other_name',
             'birth_date', 'passport_series', 'pinfl',
             'country', 'region', 'district', 'address',
             'gender', 'nationality', 'image', 'passport_file'
