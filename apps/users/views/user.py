@@ -124,14 +124,14 @@ class GetMeView(APIView):
         if hasattr(user, 'applicant_profile'):
             applicant_profile = ApplicantProfileCreateSerializer(user.applicant_profile).data
 
-        if hasattr(user, 'diploma'):
-            diplom = DiplomCreateSerializer(user.diploma).data
+        if hasattr(user, 'diplom'):
+            diplom = DiplomCreateSerializer(user.diplom).data
 
-        if hasattr(user, 'transfer_diploma'):
-            transfer_diplom = TransferDiplomCreateSerializer(user.transfer_diploma).data
+        if hasattr(user, 'transfer_diplom'):
+            transfer_diplom = TransferDiplomCreateSerializer(user.transfer_diplom).data
 
         try:
-            application = Application.objects.get(user=user)
+            application = Application.objects.filter(user=user).latest('created_at')
             application = ApplicationCreateSerializer(application).data
         except Application.DoesNotExist:
             application = None
