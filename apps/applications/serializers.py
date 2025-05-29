@@ -43,6 +43,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
             else:
                 if self.initial_data.get('admission_type') == 'regular':
                     self.fields['diplom'].required = True
-                if self.initial_data.get('admission_type') == 'transfer':
+                elif self.initial_data.get('admission_type') == 'transfer':
                     self.fields['transfer_diplom'].required = True
 
