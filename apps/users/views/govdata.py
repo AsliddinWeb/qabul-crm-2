@@ -81,9 +81,7 @@ class GetPassportInfoFromGov(APIView):
                     with open(file_path, "wb") as f:
                         f.write(base64.b64decode(base64_photo))
 
-                    photo_url = request.build_absolute_uri(
-                        os.path.join(settings.MEDIA_URL, "applications/passport", file_name)
-                    )
+                    photo_url = f"https://qabul-api.xiuedu.uz{settings.MEDIA_URL}applications/passport/{file_name}"
                     returned_data["photo_url"] = photo_url
 
                 return Response(returned_data, status=200)
