@@ -1,11 +1,10 @@
 {% extends "admin/change_form.html" %}
-
 {% load i18n admin_urls %}
 
 {% block submit_buttons_bottom %}
   {{ block.super }}
 
-  {% if change and not is_popup %}
+  {% if change and not is_popup and show_generate_contract_button %}
     <div class="submit-row" style="margin-top: 10px;">
       <a class="button" href="{% url 'admin:generate_contract' object_id %}"
          style="background:#28a745;color:white;border-radius:4px;padding:5px 15px;">

@@ -82,6 +82,18 @@ class ApplicationAdmin(UnfoldModelAdmin):  # 🔹 UnfoldModelAdmin ishlatilmoqda
     search_fields = ('user__full_name', 'user__phone')
     readonly_fields = ('reviewed_by', 'contract_file', 'course', 'telegram_info')
 
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+
+        user = request.user
+        is_bugalteriya = user.groups.filter(name='Bugalteriya').exists()
+
+        extra_context['show_generate_contract_button'] = is_bugalteriya
+
+        return super().change_view(
+            request, object_id, form_url, extra_context=extra_context
+        )
+
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
