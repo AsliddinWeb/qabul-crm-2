@@ -3,12 +3,22 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 from unfold.admin import ModelAdmin, StackedInline, TabularInline
 
+from unfold.forms import AdminPasswordChangeForm, UserChangeForm, UserCreationForm
+from django.contrib.auth.models import Group
+from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin
+
 from apps.users.models import (
     User, PhoneVerification,
     Applicant, Staff, Admin,
     ApplicantProfile, StaffProfile, AdminProfile
 )
 
+# Unregister
+admin.site.unregister(Group)
+
+@admin.register(Group)
+class GroupAdmin(BaseGroupAdmin, ModelAdmin):
+    pass
 
 # --- Inline Profile Admins ---
 class ApplicantProfileInline(StackedInline):
@@ -32,6 +42,12 @@ class AdminProfileInline(StackedInline):
 # --- Custom User Admin ---
 @admin.register(User)
 class UserAdmin(ModelAdmin, BaseUserAdmin):
+    # Forms loaded from `unfold.forms`
+    form = UserChangeForm
+    add_form = UserCreationForm
+    change_password_form = AdminPasswordChangeForm
+
+
     model = User
     list_display = ('phone', 'id', 'full_name', 'telegram_id', 'role', 'is_verified', 'is_active', 'is_staff')
     list_filter = ('role', 'is_active', 'is_staff', 'is_verified')
