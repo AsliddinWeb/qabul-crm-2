@@ -89,7 +89,7 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # React yoki Vue
     "http://127.0.0.1:5173",  # Vite (Vue 3)
-    "https://qabul.xiuedu.uz/", # Site
+    "https://qabul.xiuedu.uz", # Site
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
