@@ -37,7 +37,7 @@ class UserAdmin(ModelAdmin, BaseUserAdmin):
     list_filter = ('role', 'is_active', 'is_staff', 'is_verified')
     search_fields = ('phone', 'full_name', 'telegram_id')
     ordering = ('-id',)
-    readonly_fields = ('last_login', 'is_verified')
+    readonly_fields = ('last_login',)
 
     fieldsets = (
         (_('Login maʼlumotlari'), {
